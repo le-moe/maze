@@ -72,6 +72,10 @@ class Cell():
             except:
                 pass
 
+    def __contains__(self, wall):
+        # 4 in cell
+        return wall in self.walls
+
 class Maze():
     """ Maze of hexagonal cell"""
     def __init__(self, width, height):
@@ -86,10 +90,41 @@ class Maze():
                     self.cells.append(Cell(i*2+1,j))
 
     def __repr__(self):
-        repr = "<maze>\n"
-        for c in self.cells:
-            repr += '%s\n' % c
+        repr = "<maze %s, %s>\n" % (self.width, self.height)
+        repr += self._to_ascii()
         return repr
+
+    def _to_ascii(self):
+        """ create a win[x][y]
+            X : horizontal axis
+            Y : vertical axis
+        """
+        # initialize the window
+        win_w = 5*(self.width-2)
+        win_h = self.height+3
+        win = [[' ' for _ in range(win_h)] for _ in range(win_w)]
+        for c in self.cells:
+            x = 2*c.x + 1
+            y = c.y +1
+            if 0 in c:
+                win[x][y-1] = '_'
+            if 1 in c:
+                win[x+1][y] = '\\'
+            if 2 in c:
+                win[x+1][y+1] = '/'
+            if 3 in c:
+                win[x][y+1] = '_'
+            if 4 in c:
+                win[x-1][y+1] = '\\'
+            if 5 in c:
+                win[x-1][y] = '/'
+        s = '--------------\n'
+        for y,_ in enumerate(win[0]):
+            for x,_ in enumerate(win):
+                s+=win[x][y]
+            s+='|\n'
+        s += '-----------'
+        return s
 
 def test_cell():
     cM = Cell(3, 1, [])
@@ -134,5 +169,5 @@ def test_cell():
 
 if __name__ == "__main__":
     test_cell()
-    maze = Maze(3,3)
+    maze = Maze(20,20)
     print(maze)
