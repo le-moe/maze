@@ -1,3 +1,5 @@
+import random
+
 """ Coordinate
 
       0 1 2 3 4 5 6 X
@@ -33,6 +35,7 @@ class Cell():
         self.x = x
         self.y = y
         self.walls = set(walls)
+        self.in_maze = False
 
     def __repr__(self):
         return '<%s, %s, %s>' % (self.x, self.y, self.walls)
@@ -75,6 +78,14 @@ class Cell():
     def __contains__(self, wall):
         # 4 in cell
         return wall in self.walls
+
+    def labeled_walls(self):
+        labeled_walls = []
+        id = '%s:%s' % (self.x, self.y)
+        for w in self.walls:
+            label = '%s_%s' % (id,w)
+            labeled_walls.append(label)
+        return labeled_walls
 
 class Maze():
     """ Maze of hexagonal cell"""
@@ -125,6 +136,78 @@ class Maze():
             s+='|\n'
         s += '-----------'
         return s
+
+    # def list_of_walls(self, cells):
+    #     list_walls = []
+    #     for cell in cells:
+    #         list_walls.extend(self.walls_of(cell))
+    #     return list_walls
+
+    # def walls_of(self, cell):
+    #     list_walls = []
+    #     id = '%s:%s' % (cell.x, cell.y)
+    #         for w in cell.walls:
+    #             label = '%s_%s' % (id,w)
+    #             list_walls.append(label)
+    #     return list_walls
+    def cell_from_coord(self, x,y):
+        for c in self.cells:
+            if (c.x, c.y) == (x,y):
+                return c
+
+    def neighbour_cell(self, cell, direction):
+        """ return the neighbour cell from cell given in arguments by following direction """
+        if direction==0:
+            x = cell.x
+            y = cell.y -1
+        elif direction==1:
+            x = cell.x +1
+            y = cell.y -1
+        elif direction==2:
+            x = cell.x +1
+            y = cell.y +1
+        elif direction==3:
+            x = cell.x
+            y = cell.y +1
+        elif direction==4:
+            x = cell.x -1
+            y = cell.y +1
+        elif direction==5:
+            x = cell.x -1
+            y = cell.y -1
+        for c in self.cells:
+            return cell_from_coord(x,y)
+
+    def randomized_kruskal(self):
+        """ 1. Create a list of all walls, and create a set for each cell, each containing just that one cell.
+            2. For each wall, in some random order:
+                    1. If the cells divided by this wall belong to distinct sets:
+                        1. Remove the current wall.
+                        2. Join the sets of the formerly divided cells.
+        """
+        pass
+
+    def randomize_prim(self):
+        """1. Start with a grid full of walls.
+           2. Pick a cell, mark it as part of the maze. Add the walls of the cell to the wall list.
+           3. While there are walls in the list:
+                1. Pick a random wall from the list. If only one of the two cells that the wall divides is visited, then:
+                    1. Make the wall a passage and mark the unvisited cell as part of the maze.
+                    2. Add the neighboring walls of the cell to the wall list.
+                2. Remove the wall from the list.
+        """
+        in_maze = []
+        wall_list = []
+        random.shuffle(self.cells)
+        choice = self.cells.pop()
+        wall_list.extend(choice.labeled_walls())
+        in_maze.append(choice)
+        while len(wall_list) > 0:
+            wall = random.choice(wall_list)
+            # TODO
+
+
+
 
 def test_cell():
     cM = Cell(3, 1, [])
