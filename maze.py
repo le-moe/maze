@@ -112,7 +112,7 @@ class Maze():
         """ return the neighbour cell from cell given in arguments by following direction """
         if direction==0:
             x = cell.x
-            y = cell.y -1
+            y = cell.y -2
         elif direction==1:
             x = cell.x +1
             y = cell.y -1
@@ -121,7 +121,7 @@ class Maze():
             y = cell.y +1
         elif direction==3:
             x = cell.x
-            y = cell.y +1
+            y = cell.y +2
         elif direction==4:
             x = cell.x -1
             y = cell.y +1
@@ -213,8 +213,11 @@ if __name__ == "__main__":
     test_cell()
     maze = Maze(10,10)
     density = 500
-    for i in range(density):
-        c = random.choice(maze.cells)
-        neighbours = maze.all_neighbour(c)
-        maze.connect(c, random.choice(neighbours))
+    # for i in range(density):
+    #     c = random.choice(maze.cells)
+    #     neighbours = maze.all_neighbour(c)
+    #     maze.connect(c, random.choice(neighbours))
+    c = random.choice(maze.cells)
+    c.mark()
+    print(len(maze.all_neighbour(c)))
     print(maze)
